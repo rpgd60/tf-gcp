@@ -27,7 +27,7 @@ output "ssh_a" {
 }
 
 output "ssh_test" {
-  value = [for i in range(var.num_debian_vms) : "gcloud compute ssh ${i}"]
+    value =  [ for i in range(var.num_debian_vms) : "gcloud compute ssh ${i}"]
 }
 
 # output "ssh_c" {

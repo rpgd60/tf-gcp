@@ -81,7 +81,7 @@ resource "google_compute_instance" "vmc" {
     }
     alias_ip_range {
       # ip_cidr_range = google_compute_subnetwork.sub_reg2.secondary_ip_range[count.index].ip_cidr_range
-      ip_cidr_range         = "/24"
+      ip_cidr_range = "/24"
       subnetwork_range_name = google_compute_subnetwork.sub_reg2.secondary_ip_range[count.index].range_name
     }
   }

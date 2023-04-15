@@ -55,7 +55,8 @@ variable "project" {
 }
 
 variable "company" {
-  type = string
+  default = "acme"
+  type    = string
 }
 
 variable "machine_type" {

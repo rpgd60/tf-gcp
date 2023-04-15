@@ -1,6 +1,6 @@
 resource "google_compute_network" "vpc" {
   count                    = var.num_vpcs
-  name                     = "vpc-${count.index}"
+  name                     = "${local.name_prefix}-vpc-${count.index}"
   auto_create_subnetworks  = false
   enable_ula_internal_ipv6 = true
   mtu                      = 1460
@@ -8,9 +8,8 @@ resource "google_compute_network" "vpc" {
 
 ## Subnets
 
-
 resource "google_compute_subnetwork" "sub_reg1" {
-  name          = "sub-r1-${var.region}"
+  name          = "${local.name_prefix}-sub-r1-${var.region}"
   ip_cidr_range = "10.1.0.0/24"
   # region        = var.region
   network          = google_compute_network.vpc[0].id
@@ -30,7 +29,7 @@ resource "google_compute_subnetwork" "sub_reg1" {
 
 resource "google_compute_subnetwork" "sub_reg2" {
   provider         = google.region2
-  name             = "sub-r2-${var.region2}"
+  name             = "${local.name_prefix}-sub-r2-${var.region2}"
   ip_cidr_range    = "192.168.0.0/24"
   network          = google_compute_network.vpc[0].id
   ipv6_access_type = "INTERNAL"
@@ -57,13 +56,14 @@ resource "google_compute_subnetwork" "sub_reg2" {
     range_name    = "sec-range23"
     ip_cidr_range = "172.16.203.0/24"
   }
+
 }
 
 ## Firewall rules
 
 resource "google_compute_firewall" "ssh" {
   count = var.num_vpcs
-  name  = "allow-ssh-${count.index}"
+  name  = "${local.name_prefix}-allow-ssh-${count.index}"
   allow {
     ports    = ["22"]
     protocol = "tcp"
@@ -80,7 +80,7 @@ resource "google_compute_firewall" "ssh" {
 
 resource "google_compute_firewall" "ssh_v6" {
   count = var.num_vpcs
-  name  = "allow-ssh-v6-${count.index}"
+  name  = "${local.name_prefix}-allow-ssh-v6-${count.index}"
   allow {
     ports    = ["22"]
     protocol = "tcp"
@@ -96,7 +96,7 @@ resource "google_compute_firewall" "ssh_v6" {
 }
 resource "google_compute_firewall" "web" {
   count = var.num_vpcs
-  name  = "allow-web-${count.index}"
+  name  = "${local.name_prefix}-allow-web-${count.index}"
   allow {
     ports    = ["80", "443"]
     protocol = "tcp"
@@ -114,7 +114,7 @@ resource "google_compute_firewall" "web" {
 
 resource "google_compute_firewall" "web_v6" {
   count = var.num_vpcs
-  name  = "allow-web-v6-${count.index}"
+  name  = "${local.name_prefix}-allow-web-v6-${count.index}"
   allow {
     ports    = ["80", "443"]
     protocol = "tcp"
@@ -131,7 +131,7 @@ resource "google_compute_firewall" "web_v6" {
 }
 resource "google_compute_firewall" "icmp" {
   count = var.num_vpcs
-  name  = "allow-icmp-${count.index}"
+  name  = "${local.name_prefix}-allow-icmp-${count.index}"
   allow {
     protocol = "icmp"
   }
@@ -148,7 +148,7 @@ resource "google_compute_firewall" "icmp" {
 
 resource "google_compute_firewall" "icmp_v6" {
   count = var.num_vpcs
-  name  = "allow-icmp-v6-${count.index}"
+  name  = "${local.name_prefix}-allow-icmp-v6-${count.index}"
   allow {
     ## 58 is protocol for ICMP-v6 
     protocol = "58"
