@@ -28,12 +28,12 @@ variable "num_debian_vms" {
   type        = number
   default     = 0
   validation {
-    condition     = var.num_debian_vms > 0 && var.num_debian_vms <= 4
-    error_message = "number of debian vms per region must be min 1 and max 4"  
+    condition     = var.num_debian_vms >= 0 && var.num_debian_vms <= 4
+    error_message = "number of debian vms per region must be min 0 and max 4"
   }
 }
 
-variable "sec_region" {
+variable "region2" {
   description = "GCP secondary region"
   default     = "us-central1"
   type        = string
@@ -43,7 +43,7 @@ variable "zone" {
   type        = list(string)
 }
 
-variable "sec_zone" {
+variable "zone2" {
   description = "Zones within secondary region"
   type        = list(string)
 }

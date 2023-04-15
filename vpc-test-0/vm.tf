@@ -18,23 +18,24 @@ resource "google_compute_instance" "vma" {
 
 
   network_interface {
-    subnetwork = google_compute_subnetwork.sub00-main.id
+    subnetwork = google_compute_subnetwork.sub_reg1.id
     stack_type = "IPV4_IPV6"
 
     access_config {
       # Include this section to give the VM an external IP address
     }
   }
+
 }
 
 resource "google_compute_instance" "vmb" {
-  provider = google.sec_region
-  count    = var.num_vms
+  provider     = google.region2
+  count        = var.num_vms
   name         = "vmb-${count.index}"
   machine_type = var.machine_type
   tags         = ["ssh", "web", "icmp"]
   labels       = local.common_labels
-  zone         = var.sec_zone[count.index]
+  zone         = var.zone2[count.index]
 
   boot_disk {
     initialize_params {
@@ -46,7 +47,7 @@ resource "google_compute_instance" "vmb" {
   metadata_startup_script = file("${path.module}/startup_ubuntu.sh")
 
   network_interface {
-    subnetwork = google_compute_subnetwork.sub01-sec.id
+    subnetwork = google_compute_subnetwork.sub_reg2.id
     stack_type = "IPV4_IPV6"
     access_config {
       # Include this section to give the VM an external IP address
@@ -55,13 +56,13 @@ resource "google_compute_instance" "vmb" {
 }
 
 resource "google_compute_instance" "vmc" {
-  provider = google 
-  count    =  var.num_debian_vms
+  provider     = google.region2
+  count        = var.num_debian_vms
   name         = "vmc-${count.index}"
   machine_type = var.machine_type
   tags         = ["ssh", "web", "icmp"]
   labels       = local.common_labels
-  zone         = var.zone[count.index] 
+  zone         = var.zone2[count.index]
 
   boot_disk {
     initialize_params {
@@ -73,10 +74,16 @@ resource "google_compute_instance" "vmc" {
   metadata_startup_script = file("${path.module}/startup_debian.sh")
 
   network_interface {
-    subnetwork = google_compute_subnetwork.sub00-main.id
+    subnetwork = google_compute_subnetwork.sub_reg2.id
     stack_type = "IPV4_IPV6"
     access_config {
       # Include this section to give the VM an external IP address
     }
+    alias_ip_range {
+      # ip_cidr_range = google_compute_subnetwork.sub_reg2.secondary_ip_range[count.index].ip_cidr_range
+      ip_cidr_range = "/24"
+      subnetwork_range_name = google_compute_subnetwork.sub_reg2.secondary_ip_range[count.index].range_name
+    }
   }
+  allow_stopping_for_update = true
 }

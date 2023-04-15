@@ -2,6 +2,7 @@ Simple tests of Terraform on GCP
 
 - Creates VPC,  Subnets and Compute Engine VMs
 - Creates resources on  two regions, thus using provider alias
+    - One of the subnets contains secondary ranges 
 - Authentication with  `gcloud auth application-default login`
 
 - Uses 'arm64' machine types (and images) since there is a free trial at the time of this writing (Q2 2023)

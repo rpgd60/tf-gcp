@@ -16,8 +16,8 @@ provider "google" {
 }
 
 provider "google" {
-  alias   = "sec_region"
+  alias   = "region2"
   project = var.project
-  region  = var.sec_region
+  region  = var.region2
   # zone    = var.zone
 }

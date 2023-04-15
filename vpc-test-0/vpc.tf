@@ -9,8 +9,8 @@ resource "google_compute_network" "vpc" {
 ## Subnets
 
 
-resource "google_compute_subnetwork" "sub00-main" {
-  name          = "sub-vpc0-${var.region}"
+resource "google_compute_subnetwork" "sub_reg1" {
+  name          = "sub-r1-${var.region}"
   ip_cidr_range = "10.1.0.0/24"
   # region        = var.region
   network          = google_compute_network.vpc[0].id
@@ -22,11 +22,15 @@ resource "google_compute_subnetwork" "sub00-main" {
     flow_sampling        = 0.5
     metadata             = "INCLUDE_ALL_METADATA"
   }
+  secondary_ip_range {
+    range_name    = "sec-range10"
+    ip_cidr_range = "172.16.100.0/24"
+  }
 }
 
-resource "google_compute_subnetwork" "sub01-sec" {
-  provider         = google.sec_region
-  name             = "sub-vpc0-${var.sec_region}"
+resource "google_compute_subnetwork" "sub_reg2" {
+  provider         = google.region2
+  name             = "sub-r2-${var.region2}"
   ip_cidr_range    = "192.168.0.0/24"
   network          = google_compute_network.vpc[0].id
   ipv6_access_type = "INTERNAL"
@@ -35,6 +39,23 @@ resource "google_compute_subnetwork" "sub01-sec" {
     aggregation_interval = "INTERVAL_1_MIN"
     flow_sampling        = 0.5
     metadata             = "INCLUDE_ALL_METADATA"
+  }
+
+  secondary_ip_range {
+    range_name    = "sec-range20"
+    ip_cidr_range = "172.16.200.0/24"
+  }
+  secondary_ip_range {
+    range_name    = "sec-range21"
+    ip_cidr_range = "172.16.201.0/24"
+  }
+  secondary_ip_range {
+    range_name    = "sec-range22"
+    ip_cidr_range = "172.16.202.0/24"
+  }
+  secondary_ip_range {
+    range_name    = "sec-range23"
+    ip_cidr_range = "172.16.203.0/24"
   }
 
 }
@@ -56,8 +77,8 @@ resource "google_compute_subnetwork" "sub01-sec" {
 
 # resource "google_compute_subnetwork" "sub11-sec" {
 #   count = var.num_vpcs >= 1 ? 1: 0
-#   provider      = google.sec_region
-#   name          = "sub-vpc1-${var.sec_region}"
+#   provider      = google.region2
+#   name          = "sub-vpc1-${var.region2}"
 #   ip_cidr_range = "10.1.1.0/24"
 #   network       = google_compute_network.vpc[1].id
 #   ipv6_access_type = "INTERNAL"
