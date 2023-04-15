@@ -1,6 +1,7 @@
 ## Rafa
 common/*
 tests/*
+no_repo/*
 
 # Local .terraform directories
 **/.terraform/*
